@@ -511,7 +511,7 @@ class ProcessPayment
 			'xCommand'=>"cc:sale",
 			"xToken"=>$token,
 			"xAmount"=>$amount,
-			
+			"xName"=>$payer_details['customer_name'],
 		);
 
         $headers = array(

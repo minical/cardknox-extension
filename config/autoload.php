@@ -27,7 +27,7 @@ $config['js-files'] = array(
         ),
     ),
 	array(
-        "file" => 'https://cdn.cardknox.com/ifields/2.6.2006.0102/ifields.min.js',
+        "file" => 'https://cdn.cardknox.com/ifields/2.15.2302.0801/ifields.min.js',
         "location" => array(
             "cardknox_controller/index",
             "booking/index",

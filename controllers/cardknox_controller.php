@@ -20,15 +20,6 @@ class Cardknox_controller extends MY_Controller
 		$this->load->vars($view_data);
 	}
 
-	function get_cardknox_iframe_token(){
-		
-        $cardknox_data = $this->Cardknox_model->get_cardknox_detail($this->company_id);
-		$cardknox_data = json_decode($cardknox_data['gateway_meta_data'], true);
-		$iFields_key = $this->encrypt->decode($cardknox_data['iFields_key']);
-		$company_id = $this->company_id;
-        
-		echo json_encode(array('success' => true,'iFields_key' => $iFields_key));
-	}
 	function save_customer_cardknox_card(){
 
 		$cardknox_data = $this->Cardknox_model->get_cardknox_detail($this->company_id);
@@ -46,14 +37,33 @@ class Cardknox_controller extends MY_Controller
 		$result = trim($result,'"');
 		$resultArray = array_values(explode("&",$result));
 		$resultToken = '';
+		$resultStatus = '';
+		$resultError = '';
 		
 		foreach ($resultArray as $key => $value) {
+
 			if (str_contains($resultArray[$key], 'xToken')) { 
 				$resultToken = explode("=",$resultArray[$key])[1];
+			}else{
+				if (str_contains($resultArray[$key], 'xStatus')) { 
+					$resultStatus = explode("=",$resultArray[$key])[1];
+				}
+				if (str_contains($resultArray[$key], 'xError=')) { 
+					$resultError = explode("=",$resultArray[$key])[1];
+				}
 			}
+
 		}
-       
-		echo json_encode(array('success' => true, 'company_id' => $this->company_id , 'token' => $resultToken));
+
+		$resultError = str_replace("+", " ", $resultError);
+
+		if ($resultStatus == 'Error') {
+			echo json_encode(array('failed' => true, 'company_id' => $this->company_id , 'error'=> $resultError));
+
+		} else {
+			echo json_encode(array('success' => true, 'company_id' => $this->company_id , 'token' => $resultToken));
+		}
+		
 
 	}
 
@@ -80,20 +90,20 @@ class Cardknox_controller extends MY_Controller
 
 		$cardknox_data = $this->Cardknox_model->get_cardknox_data($this->company_id);
 			
-			$transaction_key = $this->input->post('transaction_key');
-			$iFields_key = $this->input->post('iFields_key');
+		$transaction_key = $this->input->post('transaction_key');
+		$iFields_key = $this->input->post('iFields_key');
 
-			$meta['transaction_key'] = $this->encrypt->encode($transaction_key);
-			$meta['iFields_key'] = $this->encrypt->encode($iFields_key);
-				
-			$data = array(
-						'company_id' => $this->company_id,
-						'gateway_meta_data' => json_encode($meta),
-						'selected_payment_gateway' => 'cardknox'
-					);
+		$meta['transaction_key'] = $this->encrypt->encode($transaction_key);
+		$meta['iFields_key'] = $this->encrypt->encode($iFields_key);
+			
+		$data = array(
+					'company_id' => $this->company_id,
+					'gateway_meta_data' => json_encode($meta),
+					'selected_payment_gateway' => 'cardknox'
+				);
 
-			$this->Cardknox_model->save_api_key($data);
-			echo json_encode(array('success' => true));
+		$this->Cardknox_model->save_api_key($data);
+		echo json_encode(array('success' => true));
     }	
 
 	function deconfigure_cardknox_apikey(){
