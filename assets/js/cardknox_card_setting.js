@@ -22,11 +22,33 @@ document.addEventListener("post.open_customer_model", function (e) {
                                 'Card Details'+
                             '</label>'+
                             '<div class="col-sm-9">'+
-                                '<button type="button" class="btn btn-info" onclick="show_iframe()">Add card Details</button>'+
+                                '<button type="button" class="btn btn-info" onclick="show_iframe()">Add New Card Details</button>'+
                             '</div>';
         $('.form-group.form-group-sm.customer_field_12').after(cardknox_button);
     } else {
+        var cardknox_remove_button = '<button class="btn btn-warning" style="color:white;" id="remove-cardknox-button">Replace Old Card</button>';
         $('.cc_field').css('display', 'block');
+
+		$('.credit_card_cvc').after(cardknox_remove_button)
+		$('#custom_form').find('#remove-cardknox-button').closest('.col-sm-3').removeClass('col-sm-3').addClass('col-sm-6').css('display','flex');
+		$('#custom_form').find('#remove-cardknox-button').addClass('ml-5');
+
+		$('#remove-cardknox-button').click(function () {
+			if (confirm('Are you sure you want to replace the old card ?')) {
+				$('.cc_field').css('display', 'none');
+				// $('.cc_field').remove();
+
+				var cardknox_button = '<div class="form-group form-group-sm card_button">'+
+									'<label for="cardknox_card_data" class="col-sm-3 control-label">'+
+										'Card Details'+
+									'</label>'+
+									'<div class="col-sm-9">'+
+										'<button type="button" class="btn btn-info" onclick="show_iframe()">Add New Card Details</button>'+
+									'</div>';
+				$('.form-group.form-group-sm.customer_field_12').after(cardknox_button);
+		    }
+		})
+
     }
 
 });
@@ -99,11 +121,11 @@ function show_iframe() {
 
 	setAccount(myVar, 'Minical', '1.0')
 
-	let style = {
+	let borderStyle = {
 		border: '1px solid white',
 	};
-	setIfieldStyle('card-number', style);
-	setIfieldStyle('cvv', style);
+	setIfieldStyle('card-number', borderStyle);
+	setIfieldStyle('cvv', borderStyle);
 
 	enableAutoFormatting('');
 
@@ -190,6 +212,7 @@ function show_iframe() {
 				document.getElementById('card-token').innerHTML = '';
 				document.getElementById('cvv-token').innerHTML = '';
 				document.getElementById('customer-token').innerHTML = '';
+				document.getElementById('customer-error').innerHTML = '';
 
 				submitBtn.disabled = false;
 			},
@@ -211,7 +234,7 @@ var save_customer_cardknox_card = function( customerId){
 		let xYear = document.getElementById("year").value;
 	
 		let card_number_token = document.querySelector("[data-ifields-id='card-number-token']").value;
-		let cvv_token = document.querySelector("[data-ifields-id='cvv-token']").value;
+		// let cvv_token = document.querySelector("[data-ifields-id='cvv-token']").value;
 			
 		var customer_card_data = [{
 			"customer_name": xName,
@@ -221,7 +244,6 @@ var save_customer_cardknox_card = function( customerId){
 			"cc_cvc_encrypted": null,
 			"cc_number": card_number_token,
 			"token": null,
-	
 		}]; 
 		console.log(customer_card_data)
 	

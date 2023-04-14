@@ -18,7 +18,7 @@ class Cardknox_controller extends MY_Controller
 		$view_data['menu_on'] = true;
 
 		$this->load->vars($view_data);
-	}
+	}  
 
 	function save_customer_cardknox_card(){
 
@@ -27,12 +27,13 @@ class Cardknox_controller extends MY_Controller
 		$xKey = $this->encrypt->decode($cardknox_data['transaction_key']);
 
 		$customer_data =  $this->input->post();
+		// prx($customer_data); die;
         $cardNumber = $customer_data['data']['0']['cc_number'];
         $cardExpDate = $customer_data['data']['0']['cc_expiry_month'].$customer_data['data']['0']['cc_expiry_year'];
         $customerName = $customer_data['data']['0']['customer_name'];
         // $customerCvc = $customer_data['data']['0']['cvc'];
    
-		$result = $this->cardknoxintegration->get_cardknox_token($xKey, $cardNumber,$cardExpDate,$customerName);
+		$result = $this->cardknoxintegration->get_cardknox_token($xKey, $cardNumber,$cardExpDate,$customerName,$customer_data);
 
 		$result = trim($result,'"');
 		$resultArray = array_values(explode("&",$result));

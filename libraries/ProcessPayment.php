@@ -59,7 +59,6 @@ class ProcessPayment
         $this->ci->load->model("Card_model");
         $this->ci->load->library('encrypt');
         $this->ci->load->model('Booking_model');
-        // $this->ci->load->model('Cardknox_model'); 
 		
 		
 		$this->cardknox_base_url = ($this->ci->config->item('app_environment') == "development") ? "https://x1.cardknox.com/gatewayform" : "https://x1.cardknox.com/gatewayform";
@@ -244,7 +243,7 @@ class ProcessPayment
         $customer_id = $customer_id ? $customer_id : $booking['booking_customer_id'];
 
         $customer = $this->ci->Customer_model->get_customer($customer_id);
-
+      
         unset($customer['cc_number']);
         unset($customer['cc_expiry_month']);
         unset($customer['cc_expiry_year']);
@@ -263,6 +262,7 @@ class ProcessPayment
         }
         $token = json_decode($customer['meta_data'])->cardknox_token;
         $meta_data = json_decode($customer['meta_data'], true);
+
         
         $customer = json_decode(json_encode($customer), 1);
         $hasTokenexToken = (isset($token) and $token);
@@ -334,7 +334,6 @@ class ProcessPayment
         $credentials['payment_gateway'] = array(
             'transaction_key' => isset($meta_data["transaction_key"]) ? $this->ci->encrypt->decode($meta_data["transaction_key"]) : "",
             'payment_gateway_name' => isset($meta_data["payment_gateway_name"]) ? $meta_data["payment_gateway_name"] : "",
-            // 'credentials' => isset($meta_data["credentials"]) ? $meta_data["credentials"] : ""
         );
 
         $result                                = $credentials;
@@ -512,6 +511,18 @@ class ProcessPayment
 			"xToken"=>$token,
 			"xAmount"=>$amount,
 			"xName"=>$payer_details['customer_name'],
+			'xDescription'=>'customer_notes:'.$payer_details['customer_notes'],
+			'xCustom01'=>'address:'.$payer_details['address'],
+			'xCustom02'=>'city:'.$payer_details['city'],
+			'xCustom03'=>'region:'.$payer_details['region'],
+			'xCustom04'=>'country:'.$payer_details['country'],
+			'xCustom05'=>'postal_code:'.$payer_details['postal_code'],
+			'xCustom06'=>'phone:'.$payer_details['phone'],
+			'xCustom07'=>'fax:'.$payer_details['fax'],
+			'xCustom08'=>'email:'.$payer_details['email'],
+			'xCustom09'=>'address2:'.$payer_details['address2'],
+			'xCustom10'=>'phone2:'.$payer_details['phone2'],
+			'xCustom11'=>'cc_expiry_month_year:'.$payer_details['cc_expiry_month'].'/'.$payer_details['cc_expiry_year'],
 		);
 
         $headers = array(
@@ -575,7 +586,7 @@ class ProcessPayment
         $payer_detail = explode(" ", $payer_details['customer_name']);
         $payer_detail['first_name'] = $payer_detail[0];
         $payer_detail['last_name'] = isset($payer_detail[1]) ? $payer_detail[1] :''; 
-        
+
 		$data= array(
 			'xKey'=> $this->transaction_key,
 			'xVersion'=>"4.5.9",
@@ -584,6 +595,19 @@ class ProcessPayment
 			'xCommand'=>"cc:refund",
 			"xAmount"=>$amount,
 			"xRefNum"=> $gateway_charge_id,
+			'xName'=>$payer_details['customer_name'],
+			'xDescription'=>'customer_notes:'.$payer_details['customer_notes'],
+			'xCustom01'=>'address:'.$payer_details['address'],
+			'xCustom02'=>'city:'.$payer_details['city'],
+			'xCustom03'=>'region:'.$payer_details['region'],
+			'xCustom04'=>'country:'.$payer_details['country'],
+			'xCustom05'=>'postal_code:'.$payer_details['postal_code'],
+			'xCustom06'=>'phone:'.$payer_details['phone'],
+			'xCustom07'=>'fax:'.$payer_details['fax'],
+			'xCustom08'=>'email:'.$payer_details['email'],
+			'xCustom09'=>'address2:'.$payer_details['address2'],
+			'xCustom10'=>'phone2:'.$payer_details['phone2'],
+			'xCustom11'=>'cc_expiry_month_year:'.$payer_details['cc_expiry_month'].'/'.$payer_details['cc_expiry_year'],
 		);
         
         $headers = array(

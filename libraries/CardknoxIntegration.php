@@ -40,13 +40,20 @@ class CardknoxIntegration
         return $response;
     }
 
-    public function get_cardknox_token($xKey, $cardNumber,$cardExpDate,$customerName){
+    public function get_cardknox_token($xKey, $cardNumber,$cardExpDate,$customerName,$customer_data){
 
         $api_url = $this->cardknox_base_url;
         $method = '';
         $method_type = 'POST';
+		$xStreet = isset($customer_data['data']['0']['address'])?$customer_data['data']['0']['address']:'';
+        $xZip = isset($customer_data['data']['0']['postal_code'])?$customer_data['data']['0']['postal_code']:'';
+		$xCustom1 = isset($customer_data['data']['0']['phone'])?$customer_data['data']['0']['phone']:'';
+		$xCustom2 = isset($customer_data['data']['0']['city'])?$customer_data['data']['0']['city']:'';
+		$xCustom3 = isset($customer_data['data']['0']['region'])?$customer_data['data']['0']['region']:'';
+		$xCustom4 = isset($customer_data['data']['0']['country'])?$customer_data['data']['0']['country']:'';
+		$xCustom5 = isset($customer_data['data']['0']['special_requests'])?$customer_data['data']['0']['special_requests']:'';
 
-        $data = array(
+		$data = array(
 			'xCardNum'=> $cardNumber,
 			'xExp'=> $cardExpDate,
 			'xKey'=> $xKey,
@@ -55,6 +62,13 @@ class CardknoxIntegration
 			'xSoftwareVersion'=>"1.0",
 			'xCommand'=>"cc:Save",
 			"xName"=>$customerName,
+			"xStreet"=>$xStreet,
+			"xZip"=>$xZip,
+			"xCustom01"=>$xCustom1,
+			"xCustom02"=>$xCustom2,
+			"xCustom03"=>$xCustom3,
+			"xCustom04"=>$xCustom4,
+			"xCustom05"=>$xCustom5,
 		);
 	
         $headers = array(

@@ -1,317 +1,388 @@
 $(document).ready(function show_cardknox_iframe(){
 
-		var str=new Date().getFullYear().toString().substr(2, 2);
-					
-		var pci_card_iframe = 
-		
-		'<div class="" style="">'+
-		'<div class="col-sm-3">'+
-		'<label for="customer-name" class="">Cardknox Card Details</label>'+
-		'</div>'+
-		'<div class=" col-sm-9">'+
-			'<form id="payment-form" method="POST">'+
-				'<input style="display:none;" id="name" name="xName" class="form-control" placeholder="Name On Card" autocomplete="cc-name"></input>'+
-				'<br />'+
+	var str=new Date().getFullYear().toString().substr(2, 2);
+				
+	var pci_card_iframe = 
 	
-				'<div class="mb-3" style="display:flex;">'+
-				
-					'<div class=" col-sm-12"> <iframe class="form-control mr-4 " id="cc_number_ifields" style="width: 198px !important; height: 36px;"  data-ifields-id="card-number" data-ifields-placeholder="Card Number" src="https://cdn.cardknox.com/ifields/2.15.2302.0801/ifield.htm"></iframe>'+
-					' <input style="border: none !important;" class="form-control" data-ifields-id="card-number-token"  name="xCardNum" type="hidden"></input>'+
-					'<span><label data-ifields-id="card-data-error" style="color: red;"></label></span></div>'+
-					'<br />'+
+	'<div class="" style="">'+
+	'<div class="col-sm-3">'+
+	'<label for="customer-name" class="">Cardknox Card Details</label>'+
+	'</div>'+
+	'<div class=" col-sm-9">'+
+		'<form id="payment-form" method="POST">'+
+			'<input style="display:none;" id="name" name="xName" class="form-control" placeholder="Name On Card" autocomplete="cc-name"></input>'+
+			'<br />'+
 
-					'<div class=" col-sm-12"><input type="number" min="1"  max="12" class="form-control " id="month" name="xMonth" placeholder="Ex. Month July = 07" autocomplete="cc-exp-month"></input>'+
-					'<span><label data-ifields-id="month-error" style="color: red;"></label></span></div>'+
-					'<br />'+
-				'</div>'+
-				'<div class="mb-3" style="display:flex;">'+
-					'<div class=" col-sm-12"><iframe class="form-control mr-4" id="cvv_ifields" style="width: 198px !important; height: 36px;" data-ifields-id="cvv" data-ifields-placeholder="CVV" src="https://cdn.cardknox.com/ifields/2.15.2302.0801/ifield.htm"></iframe>'+
-					'<input class="form-control" data-ifields-id="cvv-token"  name="xCVV" type="hidden"></input>'+
-					'<span><label data-ifields-id="cvv-error" style="color: red;"></label></span></div>'+
-					'<div class=" col-sm-12"><input type="number" min="'+str+'" max="50" class="form-control" id="year" name="xYear" placeholder="Ex. Year 2029 = 29" autocomplete="cc-exp-year"></input>'+
-					'<span><label data-ifields-id="year-error" style="color: red;"></label></span></div>'+
-				'</div>'+
-
-				
-				'<br />'+
-				'<input class="form-control" style="display:none" id="submit-btn" type="submit" value="Submit"></input>'+
-				'<br />'+
-
-				'<label id="transaction-status"></label>'+
-				'<br />'+
-				
-
-				'<div class="results" style="display:none; ">'+
-					'<label>Card Token: </label><label id="card-token"></label>'+
-					'<br />'+
-					'<label>CVV Token: </label><label id="cvv-token"></label>'+
-					'<br />'+
-					'<label>Customer Token: </label><label id="customer-token"></label>'+
-					'<br />'+
-					'<label>Company Id: </label><label id="company_id"></label>'+
-				'</div>'+
-				'<br />'+
-				'<br />'+
-			'</form>'
-		'</div>'+
-		'</div>';
-
-		$('.add_cardknox_details ').hide();
-		$('.add_cardknox_details').after(pci_card_iframe);
-
-		enableAutoSubmit('payment-form');
-
-		const d = new Date();
-		const timeWithDate = d.toISOString();
-	
-		setAccount(ifieldKey, 'Minical', '1.0')
-		
-		let style = {
-			border: '1px solid white',
-		};
-		setIfieldStyle('card-number', style);
-		setIfieldStyle('cvv', style);
-		
-		enableAutoFormatting('');
-
-
-			addIfieldCallback('blur', function(data) {
-			console.log(JSON.stringify(data))
-			if (data.issuer !== 'amex' && (data.cardNumberIsValid == false || data.cardNumberLength !== 16 || data.cardNumberIsEmpty == true)) {
-					document.querySelector("[data-ifields-id='card-data-error']").innerHTML = 'Please enter the 16 digit valid card number!'
-					$('.book_now').prop('disabled', 'true');
-					return false;
-			}
-			else if(data.issuer === 'amex' && (data.cardNumberIsValid == false || data.cardNumberLength !== 15 || data.cardNumberIsEmpty === true )){
-				document.querySelector("[data-ifields-id='card-data-error']").innerHTML = 'Please enter the 15 digit valid card number!'
-				$('.book_now').prop('disabled', 'true');
-				return false;
-			}
-			else{
-				document.querySelector("[data-ifields-id='card-data-error']").innerHTML = ''
-				$('.book_now').removeProp('disabled');
-			}
+			'<div class="mb-3" style="display:flex;">'+
 			
-			if (data.issuer !== 'amex' && (data.cvvIsValid || data.cvvLength === 3 || data.cvvIsEmpty === true )) {
-				console.log(JSON.stringify(data.cvvIsValid))
-				document.querySelector("[data-ifields-id='cvv-error']").innerHTML = ''
-				$('.book_now').removeProp('disabled');
-			} 
-			else if(data.issuer === 'amex' && (data.cvvIsValid || data.cvvLength === 4 || data.cvvIsEmpty === true )){
-				console.log(JSON.stringify(data.cvvIsValid))
-				document.querySelector("[data-ifields-id='cvv-error']").innerHTML = ''
-				$('.book_now').removeProp('disabled');
-			}
-			else{
-				document.querySelector("[data-ifields-id='cvv-error']").innerHTML = 'Please enter the valid cvv!'
+				'<div class=" col-sm-12"> <iframe class="form-control mr-4 " id="cc_number_ifields" style="width: 198px !important; height: 36px;"  data-ifields-id="card-number" data-ifields-placeholder="Card Number" src="https://cdn.cardknox.com/ifields/2.15.2302.0801/ifield.htm"></iframe>'+
+				' <input style="border: none !important;" class="form-control" data-ifields-id="card-number-token"  name="xCardNum" type="hidden"></input>'+
+				'<span><label data-ifields-id="card-data-error" style="color: red;"></label></span></div>'+
+				'<br />'+
+
+				'<div class=" col-sm-12"><input type="number" min="1"  max="12" class="form-control " id="month" name="xMonth" placeholder="Ex. Month July = 07" autocomplete="cc-exp-month"></input>'+
+				'<span><label data-ifields-id="month-error" style="color: red;"></label></span></div>'+
+				'<br />'+
+			'</div>'+
+			'<div class="mb-3" style="display:flex;">'+
+				'<div class=" col-sm-12"><iframe class="form-control mr-4" id="cvv_ifields" style="width: 198px !important; height: 36px;" data-ifields-id="cvv" data-ifields-placeholder="CVV" src="https://cdn.cardknox.com/ifields/2.15.2302.0801/ifield.htm"></iframe>'+
+				'<input class="form-control" data-ifields-id="cvv-token"  name="xCVV" type="hidden"></input>'+
+				'<span><label data-ifields-id="cvv-error" style="color: red;"></label></span></div>'+
+				'<div class=" col-sm-12"><input type="number" min="'+str+'" max="50" class="form-control" id="year" name="xYear" placeholder="Ex. Year 2029 = 29" autocomplete="cc-exp-year"></input>'+
+				'<span><label data-ifields-id="year-error" style="color: red;"></label></span></div>'+
+			'</div>'+
+
+			
+			'<br />'+
+			'<input class="form-control" style="display:none" id="submit-btn" type="submit" value="Submit"></input>'+
+			'<br />'+
+
+			'<label id="transaction-status"></label>'+
+			'<br />'+
+			
+
+			'<div class="results" style="display:none; ">'+
+				'<label>Card Token: </label><label id="card-token"></label>'+
+				'<br />'+
+				'<label>CVV Token: </label><label id="cvv-token"></label>'+
+				'<br />'+
+				'<label>Customer Token: </label><label id="customer-token"></label>'+
+				'<br />'+
+				'<label>Customer Error: </label><label id="customer-error"></label>'+
+				'<br />'+
+				'<label>Company Id: </label><label id="company_id"></label>'+
+			'</div>'+
+			'<br />'+
+			'<br />'+
+		'</form>'
+	'</div>'+
+	'</div>';
+
+	$('.add_cardknox_details ').hide();
+	$('.add_cardknox_details').after(pci_card_iframe);
+
+	// enableAutoSubmit('payment-form');
+
+	const d = new Date();
+	const timeWithDate = d.toISOString();
+
+	setAccount(ifieldKey, 'Minical', '1.0')
+	
+	let style = {
+		border: '1px solid white',
+	};
+	setIfieldStyle('card-number', style);
+	setIfieldStyle('cvv', style);
+	
+	enableAutoFormatting('');
+
+
+		addIfieldCallback('blur', function(data) {
+		console.log(JSON.stringify(data))
+		if (data.issuer !== 'amex' && (data.cardNumberIsValid == false || data.cardNumberLength !== 16 || data.cardNumberIsEmpty == true)) {
+				document.querySelector("[data-ifields-id='card-data-error']").innerHTML = 'Please enter the 16 digit valid card number!'
 				$('.book_now').prop('disabled', 'true');
 				return false;
-			}
+		}
+		else if(data.issuer === 'amex' && (data.cardNumberIsValid == false || data.cardNumberLength !== 15 || data.cardNumberIsEmpty === true )){
+			document.querySelector("[data-ifields-id='card-data-error']").innerHTML = 'Please enter the 15 digit valid card number!'
+			$('.book_now').prop('disabled', 'true');
+			return false;
+		}
+		else{
+			document.querySelector("[data-ifields-id='card-data-error']").innerHTML = ''
+			$('.book_now').removeProp('disabled');
+		}
+		
+		if (data.issuer !== 'amex' && (data.cvvIsValid || data.cvvLength === 3 || data.cvvIsEmpty === true )) {
+			console.log(JSON.stringify(data.cvvIsValid))
+			document.querySelector("[data-ifields-id='cvv-error']").innerHTML = ''
+			$('.book_now').removeProp('disabled');
+		} 
+		else if(data.issuer === 'amex' && (data.cvvIsValid || data.cvvLength === 4 || data.cvvIsEmpty === true )){
+			console.log(JSON.stringify(data.cvvIsValid))
+			document.querySelector("[data-ifields-id='cvv-error']").innerHTML = ''
+			$('.book_now').removeProp('disabled');
+		}
+		else{
+			document.querySelector("[data-ifields-id='cvv-error']").innerHTML = 'Please enter the valid cvv!'
+			$('.book_now').prop('disabled', 'true');
+			return false;
+		}
 
-		});
+	});
 
 
-		let checkCardLoaded = setInterval(function() {
-			clearInterval(checkCardLoaded);
-			focusIfield('card-number');
-		}, 1000);
+	let checkCardLoaded = setInterval(function() {
+		clearInterval(checkCardLoaded);
+		focusIfield('card-number');
+	}, 1000);
 
-		document.getElementById('payment-form').addEventListener('submit', function(e){
+	document.getElementById('payment-form').addEventListener('submit', function(e){
+		e.preventDefault();
+		document.getElementById('transaction-status').innerHTML = 'Processing Transaction...';
+		let submitBtn = this;
+		submitBtn.disabled = true;
+		getTokens(function() { 
+				document.getElementById('transaction-status').innerHTML  = '';
+				document.getElementById('card-token').innerHTML = document.querySelector("[data-ifields-id='card-number-token']").value;
+				document.getElementById('cvv-token').innerHTML = document.querySelector("[data-ifields-id='cvv-token']").value;
+				
+				submitBtn.disabled = false;
+			},
+
+
+			function() {
+				document.getElementById('transaction-status').innerHTML = '';
+				document.getElementById('card-token').innerHTML = '';
+				document.getElementById('cvv-token').innerHTML = '';
+				document.getElementById('customer-token').innerHTML = '';
+
+				submitBtn.disabled = false;
+				
+			},
+			30000
+		);
+	});
+
+	// $('.card_button').remove();
+
+	$("input[name='xMonth']").blur(function () {
+		if (this.value.length > 0 && this.value >= 1 && this.value <= 12) {
+		  $('.book_now').removeProp('disabled');
+		  $("[data-ifields-id='month-error']").text('')
+		} else {
+		  $('.book_now').prop('disabled', 'true');
+		  $("[data-ifields-id='month-error']").text('Please enter the correct month')
+		}
+	});
+	$("input[name='xYear']").blur(function () {
+		var str=new Date().getFullYear().toString().substr(2, 2);
+
+		if (this.value.length === 1    ) {
+			$('.book_now').prop('disabled', 'true');
+			$("[data-ifields-id='year-error']").text('Please enter the correct year')
+		} else if (this.value >= str && this.value <= 50) {
+		  $('.book_now').removeProp('disabled');
+		  $("[data-ifields-id='year-error']").text('');
+		} else {
+		  $('.book_now').prop('disabled', 'true');
+		  $("[data-ifields-id='year-error']").text('Please enter the correct year')
+		}
+	});
+
+
+
+	$(".book_now").click(function saveCustomerCardData(e) {
 			e.preventDefault();
-			document.getElementById('transaction-status').innerHTML = 'Processing Transaction...';
-			let submitBtn = this;
-			submitBtn.disabled = true;
-			getTokens(function() { 
-					document.getElementById('transaction-status').innerHTML  = '';
-					document.getElementById('card-token').innerHTML = document.querySelector("[data-ifields-id='card-number-token']").value;
-					document.getElementById('cvv-token').innerHTML = document.querySelector("[data-ifields-id='cvv-token']").value;
-					
-					submitBtn.disabled = false;
-				},
 
-
-				function() {
-					document.getElementById('transaction-status').innerHTML = '';
-					document.getElementById('card-token').innerHTML = '';
-					document.getElementById('cvv-token').innerHTML = '';
-					document.getElementById('customer-token').innerHTML = '';
-
-					submitBtn.disabled = false;
-					
-				},
-				30000
-			);
-		});
-
-		$('.card_button').remove();
+		var customer_email = $("input[name='customer_email']").val();
+		var customer_name = $("input[name='customer_name']").val();
+		var phone = $("input[name='phone']").val();
+		var address = $("input[name='address']").val();
+		var city = $("input[name='city']").val();
+		var region = $("input[name='region']").val();
+		var country = $("input[name='country']").val();
+		var postal_code = $("input[name='postal_code']").val();
+		var special_requests = $("textarea[name='special_requests']").val();
 	
-
-							
-							
-							
-		$("input[name='xMonth']").blur(function () {
-			if (this.value.length > 0 && this.value >= 1 && this.value <= 12) {
-			  $('.book_now').removeProp('disabled');
-			  $("[data-ifields-id='month-error']").text('')
-			} else {
-			  $('.book_now').prop('disabled', 'true');
-			  $("[data-ifields-id='month-error']").text('Please enter the correct month')
-			}
-		});
-		$("input[name='xYear']").blur(function () {
-			var str=new Date().getFullYear().toString().substr(2, 2);
-
-			if (this.value.length === 1    ) {
-				$('.book_now').prop('disabled', 'true');
-				$("[data-ifields-id='year-error']").text('Please enter the correct year')
-			} else if (this.value >= str && this.value <= 50) {
-			  $('.book_now').removeProp('disabled');
-			  $("[data-ifields-id='year-error']").text('');
-			} else {
-			  $('.book_now').prop('disabled', 'true');
-			  $("[data-ifields-id='year-error']").text('Please enter the correct year')
-			}
-		});
-
-
-
-		$(".book_now").click(function saveCustomerCardData(e) {
-				e.preventDefault();
-
-			var customer_email = $("input[name='customer_email']").val();
-			var customer_name = $("input[name='customer_name']").val();
-			var phone = $("input[name='phone']").val();
-			var address = $("input[name='address']").val();
-			var city = $("input[name='city']").val();
-			var region = $("input[name='region']").val();
-			var country = $("input[name='country']").val();
-			var postal_code = $("input[name='postal_code']").val();
-			var special_requests = $("textarea[name='special_requests']").val();
-		
-			var customerData = {};			
-
-			if ($('#payment-form').html()) {
-				
-				$('#submit-btn').click();
-
-				$(this).val('Processing....');
-				$(this).prop('disabled',true);
-
-				var save_customer_cardknox_card = function( ){
-					var cardknoxToken = '';
-				
-					setTimeout(function(){
-						let xName = $("input[name=customer_name]").val();
-						let xMonth = document.getElementById("month").value;
-						let xYear = document.getElementById("year").value;
-						
-
-						let card_number_token = document.querySelector("[data-ifields-id='card-number-token']").value;
-						let cvv_token = document.querySelector("[data-ifields-id='cvv-token']").value;
+		var customerData = {};	
 		
 
-							let last_four_card_number = card_number_token.substring(0, 17).substring(12, 16);
+		if ($('#payment-form').html()) {
+			
+            // set session storage for customer information in  online_reservation
+
+			sessionStorage.setItem("ls_customer_email", $("input[name=customer_email]").val());
+			sessionStorage.setItem("ls_customer_name", $("input[name=customer_name]").val());
+			sessionStorage.setItem("ls_phone", $("input[name=phone]").val());
+			sessionStorage.setItem("ls_address", $("input[name=address]").val());
+			sessionStorage.setItem("ls_city", $("input[name=city]").val());
+			sessionStorage.setItem("ls_region", $("input[name=region]").val());
+			sessionStorage.setItem("ls_country", $("input[name=country]").val());
+			sessionStorage.setItem("ls_postal_code", $("input[name=postal_code]").val());
+			sessionStorage.setItem("ls_special_requests", $("input[name=special_requests]").val());
 
 
-							var customer_card_data = [{
-								"customer_name": xName,
-								"cc_expiry_month": xMonth,
-								"cc_expiry_year": xYear,
-								"cc_cvc_encrypted": null,
-								"cc_number": card_number_token,
-								"token": null,
-						
-							}]; 
-							console.log(customer_card_data)
-						
-						
-							var res =$.ajax({
-								type: "POST",
-								url: getBaseURL() + 'save_customer_cardknox_card',
-								dataType: "json",
-								data: { data: customer_card_data },
-								success: function (response) {
-									cardknoxToken = response.token;
-									company_id = response.company_id;
-					
-									if (response.success) {
-										console.log('card saved successfully!')
-										return true;
-										
-									} else {
-										console.log('Error ! card could not be saved!')
-										alert('Error ! card could not be saved!')
+			$('#submit-btn').click();
 
-										return false;
-									}
-								}
-							});
-				
-					
-					},2000);
-				
-					setTimeout(function(){
-						$('#customer-token').html(cardknoxToken);
-						$('#company_id').html(company_id);
-					},8000);
-				
-				}
+			$(this).val('Processing....');
+			$(this).prop('disabled',true);
 
-				save_customer_cardknox_card();
-
+			var save_customer_cardknox_card = function( ){
+				var cardknoxToken = '';
+				var cardknoxError = '';
+			
 				setTimeout(function(){
 					let xName = $("input[name=customer_name]").val();
 					let xMonth = document.getElementById("month").value;
 					let xYear = document.getElementById("year").value;
-					let card_number_token = document.querySelector("[data-ifields-id='card-number-token']").value;
 					
-					let last_four_card_number = card_number_token.substring(0, 17).substring(12, 16);
 
-					let cardknoxToken = $('#customer-token').text();
-					let company_id = $('#company_id').text();
+					let card_number_token = document.querySelector("[data-ifields-id='card-number-token']").value;
+					// let cvv_token = document.querySelector("[data-ifields-id='cvv-token']").value;
+					// let last_four_card_number = card_number_token.substring(0, 17).substring(12, 16);
+
+
+						var customer_card_data = [{
+							"customer_name": xName,
+							"cc_expiry_month": xMonth,
+							"cc_expiry_year": xYear,
+							"cc_cvc_encrypted": null,
+							"cc_number": card_number_token,
+							"token": null,
+							"customer_email": customer_email,
+							"phone": phone,
+							"address": address,
+							"city": city,
+							"region": region,
+							"country": country,
+							"postal_code": postal_code,
+							"special_requests": special_requests,
+						}]; 
+						console.log(customer_card_data)
 					
-					if(cardknoxToken ){
-						customerData.cc_number = "XXXX XXXX XXXX " + last_four_card_number;
-						customerData.cvc = null;
-						customerData.cc_token = cardknoxToken;
-						customerData.cc_expiry_month = xMonth;
-						customerData.cc_expiry_year = xYear;
-						customerData.customer_name = customer_name;
-					    console.log(customerData)
-						// update customer
-						$.ajax({
+					
+						var res =$.ajax({
 							type: "POST",
-							url: getBaseURL() + "online_reservation/book_reservation/"+company_id,
-							data: {
-								customer_data: customerData,
-								customer_name: customer_name,
-								customer_email: customer_email,
-								phone: phone,
-								address: address,
-								city: city,
-								region: region,
-								country: country,
-								postal_code: postal_code,
-								special_requests: special_requests,
-							},
+							url: getBaseURL() + 'save_customer_cardknox_card',
 							dataType: "json",
-							success: function(res) {
-								console.log(res)
-								if (res.error && res.error_msg) {
-									console.log(res.error_msg);
-								} else {
+							data: { data: customer_card_data },
+							success: function (response) {
+								cardknoxToken = response.token;
+								company_id = response.company_id;
+								cardknoxError = response.error;
+			
+								console.log("cardknoxToken", cardknoxToken + '== cardknoxError' + cardknoxError + '==company_id' + company_id );
+					
+								if (cardknoxToken) {
+									console.log('card saved successfully!')
 									
-									location.reload();
-									$(location).attr('href', getBaseURL() + "online_reservation/reservation_success/"+company_id);
+								} else {
+									console.log('card could not be saved!')
 								}
 							}
 						});
-				    }
-
-				},10000);
-
-			}
+			
+				
+				},2000);
+			
+				setTimeout(function(){
 					
-		});
+					if (cardknoxToken == undefined) {
+						console.log(cardknoxError);
+						$('#customer-error').html(cardknoxError);
+					} else {
+						console.log(cardknoxToken);
+						$('#customer-token').html(cardknoxToken);
+						$('#company_id').html(company_id);
+					}
+				},8000);
+			
+			}
+
+			save_customer_cardknox_card();
+
+			setTimeout(function(){
+				let xName = $("input[name=customer_name]").val();
+				let xMonth = document.getElementById("month").value;
+				let xYear = document.getElementById("year").value;
+				let card_number_token = document.querySelector("[data-ifields-id='card-number-token']").value;
+
+				let first_digit_of_card_number = card_number_token.substring(0, 1);
+				let last_four_card_number = card_number_token.substring(0, 17).substring(12, 16);
+
+				let cardknoxToken = $('#customer-token').text();
+				let cardknoxError = $('#customer-error').text();
+				let customerCvvToken = $('#cvv-token').text();
+
+				
+
+				let company_id = $('#company_id').text();
+
+
+				if (cardknoxToken == ''|| cardknoxToken == null|| cardknoxToken == undefined) {
+					
+					console.log(cardknoxError)
+					alert(cardknoxError);
+					location.reload();
+					
+				} else {
+					customerData.customerCvvToken = customerCvvToken;
+					customerData.cc_number = first_digit_of_card_number+"XXX XXXX XXXX " + last_four_card_number;
+					customerData.cvc = null;
+					customerData.cc_token = cardknoxToken;
+					customerData.cc_expiry_month = xMonth;
+					customerData.cc_expiry_year = xYear;
+					customerData.customer_name = customer_name;
+					console.log(customerData)
+					// update customer
+					$.ajax({
+						type: "POST",
+						url: getBaseURL() + "online_reservation/book_reservation/"+company_id,
+						data: {
+							customer_data: customerData,
+							customer_name: customer_name,
+							customer_email: customer_email,
+							phone: phone,
+							address: address,
+							city: city,
+							region: region,
+							country: country,
+							postal_code: postal_code,
+							special_requests: special_requests,
+						},
+						dataType: "json",
+						success: function(res) {
+							console.log(res)
+						
+							if (res.error && res.error_msg) {
+								console.log(res.error_msg);
+								
+							} else {
+								
+								// location.reload();
+								$(location).attr('href', getBaseURL() + "online_reservation/reservation_success/"+company_id);
+								
+							}
+						}
+					});
+				}
+				
+
+			},10000);
+
+		}
+				
+	});
 
 });
+
+// session for customer information in  online_reservation
+
+$(document).ready(function () {
+$("input[name='customer_name']").val(sessionStorage.getItem("ls_customer_name")); 
+	$("input[name='customer_email']").val(sessionStorage.getItem("ls_customer_email"));
+	$("input[name='phone']").val(sessionStorage.getItem("ls_phone"));
+	$("input[name='address']").val(sessionStorage.getItem("ls_address"));
+	$("input[name='city']").val(sessionStorage.getItem("ls_city"));
+	$("input[name='region']").val(sessionStorage.getItem("ls_region"));
+	$("input[name='country']").val(sessionStorage.getItem("ls_country"));
+	$("input[name='postal_code']").val(sessionStorage.getItem("ls_postal_code"));
+	$("input[name='special_requests']").val(sessionStorage.getItem("ls_special_requests"));
+
+
+const myTimeout = setTimeout(function () {
+	sessionStorage.removeItem("ls_customer_name")
+	sessionStorage.removeItem("ls_customer_email")
+	sessionStorage.removeItem("ls_phone")
+	sessionStorage.removeItem("ls_address")
+	sessionStorage.removeItem("ls_city")
+	sessionStorage.removeItem("ls_region")
+	sessionStorage.removeItem("ls_country")
+	sessionStorage.removeItem("ls_postal_code")
+	sessionStorage.removeItem("ls_special_requests")
+}, 3000);
+myTimeout()
+clearTimeout(myTimeout);
+})
