@@ -63,13 +63,12 @@ function show_iframe() {
 	var pci_card_iframe = 
 	
 	'<div class="" style="">'+
-	'<div class="col-sm-3">'+
-	'<label for="customer-name" class="">Cardknox Card Details</label>'+
+	'<div class="col-sm-3 text-right">'+
+	'<label for="customer-name" class="">Card Details</label>'+
 	'</div>'+
 	'<div class=" col-sm-9">'+
 		'<form id="payment-form" method="POST" style="height: 205px;">'+
 			'<input style="display:none;" id="name" name="xName" class="form-control" placeholder="Name On Card" autocomplete="cc-name"></input>'+
-			'<br />'+
 			
 			'<div class="mb-3" style="display:flex;">'+
 			

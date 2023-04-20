@@ -59,6 +59,7 @@ class ProcessPayment
         $this->ci->load->model("Card_model");
         $this->ci->load->library('encrypt');
         $this->ci->load->model('Booking_model');
+        // $this->ci->load->model('Cardknox_model'); 
 		
 		
 		$this->cardknox_base_url = ($this->ci->config->item('app_environment') == "development") ? "https://x1.cardknox.com/gatewayform" : "https://x1.cardknox.com/gatewayform";
@@ -260,8 +261,62 @@ class ProcessPayment
             $customer['cc_cvc_encrypted'] = $card_data['cc_cvc_encrypted'];
             $customer['meta_data'] = $card_data['customer_meta_data'];
         }
-        $token = json_decode($customer['meta_data'])->cardknox_token;
+
+        $token = isset(json_decode($customer['meta_data'])->cardknox_token)?json_decode($customer['meta_data'])->cardknox_token:json_decode($customer['meta_data'])->token;
         $meta_data = json_decode($customer['meta_data'], true);
+
+        if(!isset($meta_data['source'])){
+
+			if (function_exists('send_card_request')) {
+
+				$cardknox_data = $this->ci->Cardknox_model->get_cardknox_detail($this->ci->company_id);
+				$cardknox_data = json_decode($cardknox_data['gateway_meta_data'], true);
+				$xKey = $this->ci->encrypt->decode($cardknox_data['transaction_key']);
+	
+				$cardknox_token = json_decode($card_data['customer_meta_data'],true)['token'];
+				$xCurrency = 'USD';
+				
+				$apiUrl = 'https://x1.cardknox.com/gatewayjson';
+				
+				$body = array(
+					'xCardNum'=> "%CARD_NUMBER%",
+					'xExp'=> "%EXPIRATION_MM%"."%EXPIRATION_YY%",
+					'xCVV'=> "%SERVICE_CODE%",
+					'xKey'=> $xKey,
+					'xVersion'=>"4.5.9",
+					'xSoftwareName'=>"Minical",
+					'xSoftwareVersion'=>"1.0",
+					'xCommand'=>"cc:Save",
+					"xName"=>"%CARDHOLDER_NAME%",
+					"xCurrency"=>$xCurrency,
+				);
+				$body = json_decode(json_encode($body),true);
+
+				$headers = array(
+					'Accept: */*',
+					'Content-Type: application/json',
+					'Accept-Encoding: gzip, deflate, br'
+				);
+				$response = send_card_request($apiUrl, $token, $body, $headers, $method_type = 'POST');
+
+				$meta['cardknox_token'] = $response['xToken'];
+				$meta['source'] = 'cardknox';
+
+				$update_card_data = array(
+					'is_primary' => 1,
+					'customer_name' => $response['xName'],
+					'company_id' =>$customer['company_id'],
+					'cc_number' => "XXXX XXXX XXXX".substr($response['xMaskedCardNumber'],12,15),
+					'cc_expiry_month' => substr($response['xExp'],0,2),
+					'cc_expiry_year' => substr($response['xExp'],2),
+					'customer_meta_data' => json_encode($meta),
+
+				);
+               
+				$this->ci->Card_model->update_customer_primary_card($customer['customer_id'], $update_card_data);
+
+			}
+    	}
 
         
         $customer = json_decode(json_encode($customer), 1);
@@ -608,6 +663,8 @@ class ProcessPayment
 			'xCustom09'=>'address2:'.$payer_details['address2'],
 			'xCustom10'=>'phone2:'.$payer_details['phone2'],
 			'xCustom11'=>'cc_expiry_month_year:'.$payer_details['cc_expiry_month'].'/'.$payer_details['cc_expiry_year'],
+			// 'xCustom12'=>'cc_number:'.$payer_details['cc_number'],
+
 		);
         
         $headers = array(

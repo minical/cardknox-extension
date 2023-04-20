@@ -4,14 +4,13 @@ $(document).ready(function show_cardknox_iframe(){
 				
 	var pci_card_iframe = 
 	
-	'<div class="" style="">'+
-	'<div class="col-sm-3">'+
-	'<label for="customer-name" class="">Cardknox Card Details</label>'+
+	'<div class="row" style="">'+
+	'<div class="col-sm-3 text-right">'+
+	'<label for="customer-name" class="">Card Details</label>'+
 	'</div>'+
-	'<div class=" col-sm-9">'+
+	'<div class=" col-sm-9" height="140px !important">'+
 		'<form id="payment-form" method="POST">'+
 			'<input style="display:none;" id="name" name="xName" class="form-control" placeholder="Name On Card" autocomplete="cc-name"></input>'+
-			'<br />'+
 
 			'<div class="mb-3" style="display:flex;">'+
 			
@@ -60,7 +59,8 @@ $(document).ready(function show_cardknox_iframe(){
 
 	$('.add_cardknox_details ').hide();
 	$('.add_cardknox_details').after(pci_card_iframe);
-
+	// $('#payment-form').css('height: 140px !important');
+	
 	// enableAutoSubmit('payment-form');
 
 	const d = new Date();
@@ -145,7 +145,6 @@ $(document).ready(function show_cardknox_iframe(){
 		);
 	});
 
-	// $('.card_button').remove();
 
 	$("input[name='xMonth']").blur(function () {
 		if (this.value.length > 0 && this.value >= 1 && this.value <= 12) {
