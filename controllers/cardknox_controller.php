@@ -77,7 +77,7 @@ class Cardknox_controller extends MY_Controller
 
 		if(isset($cardknox_data)){
 			$data['transaction_key'] =	isset(json_decode($cardknox_data['gateway_meta_data'],true)['transaction_key']) ? $this->encrypt->decode(json_decode($cardknox_data['gateway_meta_data'],true)['transaction_key']) :'';
-			$data['iFields_key'] =  isset(json_decode($cardknox_data['gateway_meta_data'],true)['iFields_key']) ? $this->encrypt->decode(json_decode($cardknox_data['gateway_meta_data'],true)['iFields_key']) :'' ;
+			// $data['iFields_key'] =  isset(json_decode($cardknox_data['gateway_meta_data'],true)['iFields_key']) ? $this->encrypt->decode(json_decode($cardknox_data['gateway_meta_data'],true)['iFields_key']) :'' ;
 			$data['selected_payment_gateway'] =	isset($cardknox_data['selected_payment_gateway']) ? $cardknox_data['selected_payment_gateway'] :'';
 		    $data['all_payment_gateways_detail'] = 'cardknox';
     	}
@@ -92,10 +92,10 @@ class Cardknox_controller extends MY_Controller
 		$cardknox_data = $this->Cardknox_model->get_cardknox_data($this->company_id);
 			
 		$transaction_key = $this->input->post('transaction_key');
-		$iFields_key = $this->input->post('iFields_key');
+		// $iFields_key = $this->input->post('iFields_key');
 
 		$meta['transaction_key'] = $this->encrypt->encode($transaction_key);
-		$meta['iFields_key'] = $this->encrypt->encode($iFields_key);
+		// $meta['iFields_key'] = $this->encrypt->encode($iFields_key);
 			
 		$data = array(
 					'company_id' => $this->company_id,

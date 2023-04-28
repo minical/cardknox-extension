@@ -270,6 +270,20 @@ class ProcessPayment
 			if (function_exists('send_card_request')) {
 
 				$cardknox_data = $this->ci->Cardknox_model->get_cardknox_detail($this->ci->company_id);
+
+				$xStreet = isset($customer['address'])?$customer['address']:'';
+				$xZip = isset($customer['postal_code'])?$customer['postal_code']:'';
+				$xCustom1 = isset($customer['phone'])?$customer['phone']:'';
+				$xCustom2 = isset($customer['city'])?$customer['city']:'';
+				$xCustom3 = isset($customer['region'])?$customer['region']:'';
+				$xCustom4 = isset($customer['country'])?$customer['country']:'';
+				$xCustom5 = isset($customer['special_requests'])?$customer['special_requests']:'';
+				$xCustom6 = isset($customer['email'])?$customer['email']:'';
+				$xCustom7 = isset($customer['fax'])?$customer['fax']:'';
+				$xCustom8 = isset($customer['phone2'])?$customer['phone2']:'';
+				$xCustom9 = isset($customer['address2'])?$customer['address2']:'';
+
+
 				$cardknox_data = json_decode($cardknox_data['gateway_meta_data'], true);
 				$xKey = $this->ci->encrypt->decode($cardknox_data['transaction_key']);
 	
@@ -279,16 +293,28 @@ class ProcessPayment
 				$apiUrl = 'https://x1.cardknox.com/gatewayjson';
 				
 				$body = array(
-					'xCardNum'=> "%CARD_NUMBER%",
+					'xCommand'=>"cc:Save",
 					'xExp'=> "%EXPIRATION_MM%"."%EXPIRATION_YY%",
-					'xCVV'=> "%SERVICE_CODE%",
+					'xCardNum'=> "%CARD_NUMBER%",
+        			"xVendorId"=>getenv('CARDKNOX_XVENDORID'),
+					"xName"=>"%CARDHOLDER_NAME%",
 					'xKey'=> $xKey,
 					'xVersion'=>"4.5.9",
 					'xSoftwareName'=>"Minical",
 					'xSoftwareVersion'=>"1.0",
-					'xCommand'=>"cc:Save",
-					"xName"=>"%CARDHOLDER_NAME%",
+					"xStreet"=>$xStreet,
+					"xZip"=>$xZip,
+					'xCVV'=> "%SERVICE_CODE%",
 					"xCurrency"=>$xCurrency,
+					"xCustom01"=>$xCustom1,
+					"xCustom02"=>$xCustom2,
+					"xCustom03"=>$xCustom3,
+					"xCustom04"=>$xCustom4,
+					"xCustom05"=>$xCustom5,
+					"xCustom06"=>$xCustom6,
+					"xCustom07"=>$xCustom7,
+					"xCustom08"=>$xCustom8,
+					"xCustom09"=>$xCustom9,
 				);
 				$body = json_decode(json_encode($body),true);
 
@@ -547,6 +573,7 @@ class ProcessPayment
 
     public function make_payment( $amount, $currency_code, $payer_details, $token)
     {
+		// prx($currency_code);
         $api_url = $this->cardknox_base_url;
         $method = '';
         $method_type = 'POST';
@@ -558,26 +585,30 @@ class ProcessPayment
         $payer_detail['last_name'] = isset($payer_detail[1]) ? $payer_detail[1] :''; 
      
 		$data = array(
+			'xCommand'=>"cc:sale",
 			'xKey'=> $this->transaction_key,
 			'xVersion'=>"4.5.9",
 			'xSoftwareName'=>"Minical",
 			'xSoftwareVersion'=>"1.0",
-			'xCommand'=>"cc:sale",
+			"xVendorId"=>getenv('CARDKNOX_XVENDORID'),
 			"xToken"=>$token,
 			"xAmount"=>$amount,
 			"xName"=>$payer_details['customer_name'],
-			'xDescription'=>'customer_notes:'.$payer_details['customer_notes'],
-			'xCustom01'=>'address:'.$payer_details['address'],
-			'xCustom02'=>'city:'.$payer_details['city'],
-			'xCustom03'=>'region:'.$payer_details['region'],
-			'xCustom04'=>'country:'.$payer_details['country'],
-			'xCustom05'=>'postal_code:'.$payer_details['postal_code'],
-			'xCustom06'=>'phone:'.$payer_details['phone'],
-			'xCustom07'=>'fax:'.$payer_details['fax'],
-			'xCustom08'=>'email:'.$payer_details['email'],
-			'xCustom09'=>'address2:'.$payer_details['address2'],
-			'xCustom10'=>'phone2:'.$payer_details['phone2'],
-			'xCustom11'=>'cc_expiry_month_year:'.$payer_details['cc_expiry_month'].'/'.$payer_details['cc_expiry_year'],
+			'xDescription'=>$payer_details['customer_notes'],
+			'xBillFirstName'=>$payer_detail['first_name'],
+			'xBillLastName'=>$payer_detail['last_name'],
+			'xBillStreet'=>$payer_details['address'],
+			'xBillCity'=>$payer_details['city'],
+			'xBillState'=>$payer_details['region'],
+			'xBillCountry'=>$payer_details['country'],
+			'xBillZip'=>$payer_details['postal_code'],
+			'xBillPhone'=>$payer_details['phone'],
+			'xFax'=>$payer_details['fax'],
+			'xEmail'=>$payer_details['email'],
+			'xExp'=>$payer_details['cc_expiry_month'].$payer_details['cc_expiry_year'],
+			'xCustom01'=>$payer_details['address2'],
+			'xCustom02'=>$payer_details['phone2'],
+			'xCurrency'=>$currency_code,
 		);
 
         $headers = array(
@@ -643,28 +674,30 @@ class ProcessPayment
         $payer_detail['last_name'] = isset($payer_detail[1]) ? $payer_detail[1] :''; 
 
 		$data= array(
+			'xCommand'=>"cc:refund",
 			'xKey'=> $this->transaction_key,
 			'xVersion'=>"4.5.9",
 			'xSoftwareName'=>"Minical",
 			'xSoftwareVersion'=>"1.0",
-			'xCommand'=>"cc:refund",
+			"xVendorId"=>getenv('CARDKNOX_XVENDORID'),
 			"xAmount"=>$amount,
 			"xRefNum"=> $gateway_charge_id,
 			'xName'=>$payer_details['customer_name'],
-			'xDescription'=>'customer_notes:'.$payer_details['customer_notes'],
-			'xCustom01'=>'address:'.$payer_details['address'],
-			'xCustom02'=>'city:'.$payer_details['city'],
-			'xCustom03'=>'region:'.$payer_details['region'],
-			'xCustom04'=>'country:'.$payer_details['country'],
-			'xCustom05'=>'postal_code:'.$payer_details['postal_code'],
-			'xCustom06'=>'phone:'.$payer_details['phone'],
-			'xCustom07'=>'fax:'.$payer_details['fax'],
-			'xCustom08'=>'email:'.$payer_details['email'],
-			'xCustom09'=>'address2:'.$payer_details['address2'],
-			'xCustom10'=>'phone2:'.$payer_details['phone2'],
-			'xCustom11'=>'cc_expiry_month_year:'.$payer_details['cc_expiry_month'].'/'.$payer_details['cc_expiry_year'],
-			// 'xCustom12'=>'cc_number:'.$payer_details['cc_number'],
-
+            'xDescription'=>$payer_details['customer_notes'],
+			'xBillFirstName'=>$payer_detail['first_name'],
+			'xBillLastName'=>$payer_detail['last_name'],
+			'xBillStreet'=>$payer_details['address'],
+			'xBillCity'=>$payer_details['city'],
+			'xBillState'=>$payer_details['region'],
+			'xBillCountry'=>$payer_details['country'],
+			'xBillZip'=>$payer_details['postal_code'],
+			'xBillPhone'=>$payer_details['phone'],
+			'xFax'=>$payer_details['fax'],
+			'xEmail'=>$payer_details['email'],
+			'xExp'=>$payer_details['cc_expiry_month'].$payer_details['cc_expiry_year'],
+			'xCustom01'=>$payer_details['address2'],
+			'xCustom02'=>$payer_details['phone2'],
+			'xCurrency'=>$currency_code,
 		);
         
         $headers = array(

@@ -54,14 +54,15 @@ class CardknoxIntegration
 		$xCustom5 = isset($customer_data['data']['0']['special_requests'])?$customer_data['data']['0']['special_requests']:'';
 
 		$data = array(
-			'xCardNum'=> $cardNumber,
+			'xCommand'=>"cc:Save",
 			'xExp'=> $cardExpDate,
+			'xCardNum'=> $cardNumber,
+			"xVendorId"=>getenv('CARDKNOX_XVENDORID'),
+			"xName"=>$customerName,
 			'xKey'=> $xKey,
 			'xVersion'=>"4.5.9",
 			'xSoftwareName'=>"Minical",
 			'xSoftwareVersion'=>"1.0",
-			'xCommand'=>"cc:Save",
-			"xName"=>$customerName,
 			"xStreet"=>$xStreet,
 			"xZip"=>$xZip,
 			"xCustom01"=>$xCustom1,

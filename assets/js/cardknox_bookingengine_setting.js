@@ -8,12 +8,11 @@ $(document).ready(function show_cardknox_iframe(){
 	'<div class="col-sm-3 text-right">'+
 	'<label for="customer-name" class="">Card Details</label>'+
 	'</div>'+
-	'<div class=" col-sm-9" height="140px !important">'+
-		'<form id="payment-form" method="POST">'+
+	'<div class=" col-sm-9" >'+
+		'<form id="payment-form" method="POST" min-height="140px !important">'+
 			'<input style="display:none;" id="name" name="xName" class="form-control" placeholder="Name On Card" autocomplete="cc-name"></input>'+
 
 			'<div class="mb-3" style="display:flex;">'+
-			
 				'<div class=" col-sm-12"> <iframe class="form-control mr-4 " id="cc_number_ifields" style="width: 198px !important; height: 36px;"  data-ifields-id="card-number" data-ifields-placeholder="Card Number" src="https://cdn.cardknox.com/ifields/2.15.2302.0801/ifield.htm"></iframe>'+
 				' <input style="border: none !important;" class="form-control" data-ifields-id="card-number-token"  name="xCardNum" type="hidden"></input>'+
 				'<span><label data-ifields-id="card-data-error" style="color: red;"></label></span></div>'+
@@ -30,36 +29,28 @@ $(document).ready(function show_cardknox_iframe(){
 				'<div class=" col-sm-12"><input type="number" min="'+str+'" max="50" class="form-control" id="year" name="xYear" placeholder="Ex. Year 2029 = 29" autocomplete="cc-exp-year"></input>'+
 				'<span><label data-ifields-id="year-error" style="color: red;"></label></span></div>'+
 			'</div>'+
-
 			
-			'<br />'+
 			'<input class="form-control" style="display:none" id="submit-btn" type="submit" value="Submit"></input>'+
-			'<br />'+
 
 			'<label id="transaction-status"></label>'+
-			'<br />'+
-			
 
 			'<div class="results" style="display:none; ">'+
 				'<label>Card Token: </label><label id="card-token"></label>'+
-				'<br />'+
+				// '<br />'+
 				'<label>CVV Token: </label><label id="cvv-token"></label>'+
-				'<br />'+
+				// '<br />'+
 				'<label>Customer Token: </label><label id="customer-token"></label>'+
-				'<br />'+
+				// '<br />'+
 				'<label>Customer Error: </label><label id="customer-error"></label>'+
-				'<br />'+
+				// '<br />'+
 				'<label>Company Id: </label><label id="company_id"></label>'+
 			'</div>'+
-			'<br />'+
-			'<br />'+
 		'</form>'
 	'</div>'+
 	'</div>';
 
 	$('.add_cardknox_details ').hide();
 	$('.add_cardknox_details').after(pci_card_iframe);
-	// $('#payment-form').css('height: 140px !important');
 	
 	// enableAutoSubmit('payment-form');
 
@@ -308,7 +299,7 @@ $(document).ready(function show_cardknox_iframe(){
 					
 				} else {
 					customerData.customerCvvToken = customerCvvToken;
-					customerData.cc_number = first_digit_of_card_number+"XXX XXXX XXXX " + last_four_card_number;
+					customerData.cc_number = "XXXX XXXX XXXX " + last_four_card_number;
 					customerData.cvc = null;
 					customerData.cc_token = cardknoxToken;
 					customerData.cc_expiry_month = xMonth;
