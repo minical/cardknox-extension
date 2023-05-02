@@ -23,7 +23,7 @@ class Cardknox_controller extends MY_Controller
 	function save_customer_cardknox_card(){
 
 		$customer_data =  $this->input->post();
-        $company_id = $customer_data['data']['0']['company_id'];
+        $company_id = isset($customer_data['data']['0']['company_id']) && $customer_data['data']['0']['company_id'] ? $customer_data['data']['0']['company_id'] : $this->company_id;
 
 		$cardknox_data = $this->Cardknox_model->get_cardknox_detail($company_id);
 		$cardknox_data = json_decode($cardknox_data['gateway_meta_data'], true);
@@ -60,10 +60,10 @@ class Cardknox_controller extends MY_Controller
 		$resultError = str_replace("+", " ", $resultError);
 
 		if ($resultStatus == 'Error') {
-			echo json_encode(array('failed' => true, 'error'=> $resultError));
+			echo json_encode(array('failed' => true,'company_id'=> $company_id ,'error'=> $resultError));
 
 		} else {
-			echo json_encode(array('success' => true, 'token' => $resultToken));
+			echo json_encode(array('success' => true,'company_id'=> $company_id , 'token' => $resultToken));
 		}
 		
 
