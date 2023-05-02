@@ -22,13 +22,14 @@ class Cardknox_controller extends MY_Controller
 
 	function save_customer_cardknox_card(){
 
-		$cardknox_data = $this->Cardknox_model->get_cardknox_detail($this->company_id);
+		$customer_data =  $this->input->post();
+        $company_id = $customer_data['data']['0']['company_id'];
+
+		$cardknox_data = $this->Cardknox_model->get_cardknox_detail($company_id);
 		$cardknox_data = json_decode($cardknox_data['gateway_meta_data'], true);
 		$xKey = $this->encrypt->decode($cardknox_data['transaction_key']);
 
-		$customer_data =  $this->input->post();
-		// prx($customer_data); die;
-        $cardNumber = $customer_data['data']['0']['cc_number'];
+		$cardNumber = $customer_data['data']['0']['cc_number'];
         $cardExpDate = $customer_data['data']['0']['cc_expiry_month'].$customer_data['data']['0']['cc_expiry_year'];
         $customerName = $customer_data['data']['0']['customer_name'];
         // $customerCvc = $customer_data['data']['0']['cvc'];
@@ -59,10 +60,10 @@ class Cardknox_controller extends MY_Controller
 		$resultError = str_replace("+", " ", $resultError);
 
 		if ($resultStatus == 'Error') {
-			echo json_encode(array('failed' => true, 'company_id' => $this->company_id , 'error'=> $resultError));
+			echo json_encode(array('failed' => true, 'error'=> $resultError));
 
 		} else {
-			echo json_encode(array('success' => true, 'company_id' => $this->company_id , 'token' => $resultToken));
+			echo json_encode(array('success' => true, 'token' => $resultToken));
 		}
 		
 

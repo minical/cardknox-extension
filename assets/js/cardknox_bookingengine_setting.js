@@ -36,14 +36,9 @@ $(document).ready(function show_cardknox_iframe(){
 
 			'<div class="results" style="display:none; ">'+
 				'<label>Card Token: </label><label id="card-token"></label>'+
-				// '<br />'+
 				'<label>CVV Token: </label><label id="cvv-token"></label>'+
-				// '<br />'+
 				'<label>Customer Token: </label><label id="customer-token"></label>'+
-				// '<br />'+
 				'<label>Customer Error: </label><label id="customer-error"></label>'+
-				// '<br />'+
-				'<label>Company Id: </label><label id="company_id"></label>'+
 			'</div>'+
 		'</form>'
 	'</div>'+
@@ -165,6 +160,9 @@ $(document).ready(function show_cardknox_iframe(){
 
 	$(".book_now").click(function saveCustomerCardData(e) {
 			e.preventDefault();
+        var current_url = $(location).attr('href');
+		var parts = current_url.split("/");
+        var company_id = parts[parts.length - 1]; 
 
 		var customer_email = $("input[name='customer_email']").val();
 		var customer_name = $("input[name='customer_name']").val();
@@ -215,6 +213,7 @@ $(document).ready(function show_cardknox_iframe(){
 
 
 						var customer_card_data = [{
+							"company_id":company_id,
 							"customer_name": xName,
 							"cc_expiry_month": xMonth,
 							"cc_expiry_year": xYear,
@@ -232,7 +231,6 @@ $(document).ready(function show_cardknox_iframe(){
 						}]; 
 						console.log(customer_card_data)
 					
-					
 						var res =$.ajax({
 							type: "POST",
 							url: getBaseURL() + 'save_customer_cardknox_card',
@@ -240,7 +238,6 @@ $(document).ready(function show_cardknox_iframe(){
 							data: { data: customer_card_data },
 							success: function (response) {
 								cardknoxToken = response.token;
-								company_id = response.company_id;
 								cardknoxError = response.error;
 			
 								console.log("cardknoxToken", cardknoxToken + '== cardknoxError' + cardknoxError + '==company_id' + company_id );
@@ -265,7 +262,6 @@ $(document).ready(function show_cardknox_iframe(){
 					} else {
 						console.log(cardknoxToken);
 						$('#customer-token').html(cardknoxToken);
-						$('#company_id').html(company_id);
 					}
 				},8000);
 			
@@ -278,17 +274,12 @@ $(document).ready(function show_cardknox_iframe(){
 				let xMonth = document.getElementById("month").value;
 				let xYear = document.getElementById("year").value;
 				let card_number_token = document.querySelector("[data-ifields-id='card-number-token']").value;
-
-				let first_digit_of_card_number = card_number_token.substring(0, 1);
 				let last_four_card_number = card_number_token.substring(0, 17).substring(12, 16);
 
 				let cardknoxToken = $('#customer-token').text();
 				let cardknoxError = $('#customer-error').text();
 				let customerCvvToken = $('#cvv-token').text();
 
-				
-
-				let company_id = $('#company_id').text();
 
 
 				if (cardknoxToken == ''|| cardknoxToken == null|| cardknoxToken == undefined) {
