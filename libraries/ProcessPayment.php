@@ -264,7 +264,7 @@ class ProcessPayment
 
         $token = isset(json_decode($customer['meta_data'])->cardknox_token)?json_decode($customer['meta_data'])->cardknox_token:json_decode($customer['meta_data'])->token;
         $meta_data = json_decode($customer['meta_data'], true);
-
+//   prx($meta_data);
         if(!isset($meta_data['source'])){
 
 			if (function_exists('send_card_request')) {
@@ -288,7 +288,7 @@ class ProcessPayment
 				$xKey = $this->ci->encrypt->decode($cardknox_data['transaction_key']);
 	
 				$cardknox_token = json_decode($card_data['customer_meta_data'],true)['token'];
-				$xCurrency = 'USD';
+				// $xCurrency = 'USD';
 				
 				$apiUrl = 'https://x1.cardknox.com/gatewayjson';
 				
@@ -305,7 +305,7 @@ class ProcessPayment
 					"xStreet"=>$xStreet,
 					"xZip"=>$xZip,
 					'xCVV'=> "%SERVICE_CODE%",
-					"xCurrency"=>$xCurrency,
+					// "xCurrency"=>$xCurrency,
 					"xCustom01"=>$xCustom1,
 					"xCustom02"=>$xCustom2,
 					"xCustom03"=>$xCustom3,
@@ -417,10 +417,10 @@ class ProcessPayment
             'payment_gateway_name' => isset($meta_data["payment_gateway_name"]) ? $meta_data["payment_gateway_name"] : "",
         );
 
-        $result                                = $credentials;
+        $result = $credentials;
 
         if ($filter) {
-            $result                             = isset($result[$filter]) ? $result[$filter] : $result['payment_gateway'];
+            $result = isset($result[$filter]) ? $result[$filter] : $result['payment_gateway'];
             $result['selected_payment_gateway'] = $this->selected_gateway; // itodo legacy
         }
 

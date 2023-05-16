@@ -63,13 +63,13 @@ class CardknoxIntegration
 			'xVersion'=>"4.5.9",
 			'xSoftwareName'=>"Minical",
 			'xSoftwareVersion'=>"1.0",
-			"xStreet"=>$xStreet,
-			"xZip"=>$xZip,
-			"xCustom01"=>$xCustom1,
-			"xCustom02"=>$xCustom2,
-			"xCustom03"=>$xCustom3,
-			"xCustom04"=>$xCustom4,
-			"xCustom05"=>$xCustom5,
+			// "xStreet"=>$xStreet,
+			// "xZip"=>$xZip,
+			// "xCustom01"=>$xCustom1,
+			// "xCustom02"=>$xCustom2,
+			// "xCustom03"=>$xCustom3,
+			// "xCustom04"=>$xCustom4,
+			// "xCustom05"=>$xCustom5,
 		);
 	
         $headers = array(
@@ -79,7 +79,6 @@ class CardknoxIntegration
         );
 	
         $response = $this->call_api($api_url, $method, $data, $headers, $method_type);
-
         return $response;
     }
 	

@@ -1,9 +1,8 @@
 $('body').on('click','.login-cardknox',function(){
 	var transaction_key = $('input[name="transaction_key"]').val();
-	var iFields_key = $('input[name="iFields_key"]').val();
 
    
-	if(transaction_key == '' || iFields_key == ''){
+	if(transaction_key == ''){
 		alert(l('Please enter Transaction Key', true));
 	} 
 	else {
@@ -12,7 +11,7 @@ $('body').on('click','.login-cardknox',function(){
 				type    : "POST",
 				dataType: 'json',
 				url     : getBaseURL() + 'signin_cardknox', 
-				data: { transaction_key : transaction_key,iFields_key:iFields_key},
+				data: { transaction_key : transaction_key},
 				success: function( data ) {
 					if(data.success){
 						window.location.reload();

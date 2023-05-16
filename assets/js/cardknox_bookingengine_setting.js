@@ -9,7 +9,7 @@ $(document).ready(function show_cardknox_iframe(){
 	'<label for="customer-name" class="">Card Details</label>'+
 	'</div>'+
 	'<div class=" col-sm-9" >'+
-		'<form id="payment-form" method="POST" min-height="140px !important">'+
+		'<form id="payment-form" method="POST" min-height="140px !important" style="overflow:hidden;">'+
 			'<input style="display:none;" id="name" name="xName" class="form-control" placeholder="Name On Card" autocomplete="cc-name"></input>'+
 
 			'<div class="mb-3" style="display:flex;">'+
@@ -269,7 +269,7 @@ $(document).ready(function show_cardknox_iframe(){
 
 			save_customer_cardknox_card();
 
-			setTimeout(function(){
+			var timeout_success = setTimeout(function(){
 				let xName = $("input[name=customer_name]").val();
 				let xMonth = document.getElementById("month").value;
 				let xYear = document.getElementById("year").value;
@@ -315,16 +315,25 @@ $(document).ready(function show_cardknox_iframe(){
 						},
 						dataType: "json",
 						success: function(res) {
+								
 							console.log(res)
-						
+					
 							if (res.error && res.error_msg) {
 								console.log(res.error_msg);
 								
 							} else {
 								
 								// location.reload();
-								$(location).attr('href', getBaseURL() + "online_reservation/reservation_success/"+company_id);
-								
+								// $(location).attr('href', getBaseURL() + "online_reservation/reservation_success/"+company_id);
+								$.ajax({ 
+									type: "POST",
+									url: $(location).attr('href', getBaseURL() + "online_reservation/reservation_success/"+company_id),
+									data: {},
+									// dataType: "json",
+									success: function(res) {
+										console.log(res)
+									}
+								});
 							}
 						}
 					});
@@ -332,6 +341,18 @@ $(document).ready(function show_cardknox_iframe(){
 				
 
 			},10000);
+
+			// if (timeout_success) {
+			// 	$.ajax({
+			// 		type: "POST",
+			// 		url: getBaseURL() + "online_reservation/reservation_success/"+company_id,
+			// 		data: {},
+			// 		// dataType: "json",
+			// 		success: function(res) {
+			// 			console.log(res)
+			// 		}
+			// 	});
+			// }
 
 		}
 				
@@ -342,28 +363,28 @@ $(document).ready(function show_cardknox_iframe(){
 // session for customer information in  online_reservation
 
 $(document).ready(function () {
-$("input[name='customer_name']").val(sessionStorage.getItem("ls_customer_name")); 
-	$("input[name='customer_email']").val(sessionStorage.getItem("ls_customer_email"));
-	$("input[name='phone']").val(sessionStorage.getItem("ls_phone"));
-	$("input[name='address']").val(sessionStorage.getItem("ls_address"));
-	$("input[name='city']").val(sessionStorage.getItem("ls_city"));
-	$("input[name='region']").val(sessionStorage.getItem("ls_region"));
-	$("input[name='country']").val(sessionStorage.getItem("ls_country"));
-	$("input[name='postal_code']").val(sessionStorage.getItem("ls_postal_code"));
-	$("input[name='special_requests']").val(sessionStorage.getItem("ls_special_requests"));
+    	$("input[name='customer_name']").val(sessionStorage.getItem("ls_customer_name")); 
+		$("input[name='customer_email']").val(sessionStorage.getItem("ls_customer_email"));
+		$("input[name='phone']").val(sessionStorage.getItem("ls_phone"));
+		$("input[name='address']").val(sessionStorage.getItem("ls_address"));
+		$("input[name='city']").val(sessionStorage.getItem("ls_city"));
+		$("input[name='region']").val(sessionStorage.getItem("ls_region"));
+		$("input[name='country']").val(sessionStorage.getItem("ls_country"));
+		$("input[name='postal_code']").val(sessionStorage.getItem("ls_postal_code"));
+		$("input[name='special_requests']").val(sessionStorage.getItem("ls_special_requests"));
 
 
-const myTimeout = setTimeout(function () {
-	sessionStorage.removeItem("ls_customer_name")
-	sessionStorage.removeItem("ls_customer_email")
-	sessionStorage.removeItem("ls_phone")
-	sessionStorage.removeItem("ls_address")
-	sessionStorage.removeItem("ls_city")
-	sessionStorage.removeItem("ls_region")
-	sessionStorage.removeItem("ls_country")
-	sessionStorage.removeItem("ls_postal_code")
-	sessionStorage.removeItem("ls_special_requests")
-}, 3000);
-myTimeout()
-clearTimeout(myTimeout);
+	    var  myTimeout_session = setTimeout(function () {
+		sessionStorage.removeItem("ls_customer_name")
+		sessionStorage.removeItem("ls_customer_email")
+		sessionStorage.removeItem("ls_phone")
+		sessionStorage.removeItem("ls_address")
+		sessionStorage.removeItem("ls_city")
+		sessionStorage.removeItem("ls_region")
+		sessionStorage.removeItem("ls_country")
+		sessionStorage.removeItem("ls_postal_code")
+		sessionStorage.removeItem("ls_special_requests")
+	    }, 3000);
+	// myTimeout_session()
+	clearTimeout(myTimeout_session);
 })
