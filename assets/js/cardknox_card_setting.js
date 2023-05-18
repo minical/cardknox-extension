@@ -2,7 +2,7 @@ var cardknoxGateway = false;
 
 document.addEventListener("post.open_customer_model", function (e) {
 	$('.card_button').remove();
-
+                                                                                                                                                                                                                                 
     if (
             (
                 e && 
@@ -215,7 +215,7 @@ function show_iframe() {
 
 				submitBtn.disabled = false;
 			},
-			30000
+			2000
 		);
 	});
 
@@ -245,7 +245,7 @@ var save_customer_cardknox_card = function( customerId){
 			"token": null,
 		}]; 
 		console.log(customer_card_data)
-	
+	    
 	
 		var res = $.ajax({
 			type: "POST",

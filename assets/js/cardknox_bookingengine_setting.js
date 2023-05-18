@@ -127,7 +127,7 @@ $(document).ready(function show_cardknox_iframe(){
 				submitBtn.disabled = false;
 				
 			},
-			30000
+			2000
 		);
 	});
 
